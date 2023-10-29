@@ -10,7 +10,6 @@ function addError(errors,validation){
 
     for(let i=0;i<errorKeys.length;i++){
         let key = Object.keys(validation.errors.errors)[i];
-        console.log(key);
         errors.push(
             {
                 param:Object.keys(validation.errors.errors)[i],
@@ -72,10 +71,10 @@ exports.signup = async (req, res) => {
         errors,
       });
     }
-    const generatedId = Snowflake.generate().toString();
+    const generatedId =await Snowflake.generate().toString();
     const encryptedPass = await bcrypt.hash(password, 10);
     const user = await User.create({
-      id: generatedId,
+      _id: generatedId,
       name,
       email,
       password: encryptedPass,
