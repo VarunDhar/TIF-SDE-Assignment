@@ -19,7 +19,7 @@ exports.createRole = async (req,res)=>{
         }
         
         const generatedId = Snowflake.generate().toString();
-        const createdRole = (await Role.create({id:generatedId,name:name}));
+        const createdRole = (await Role.create({_id:generatedId,name:name}));
             //{id:true, name:true, created_at:true, updated_at:true, _id:false, __v:false}));
         //.select({"id":1, "name":1, "created_at":1, "updated_at":1, "_id":0, "__v":0});
 
