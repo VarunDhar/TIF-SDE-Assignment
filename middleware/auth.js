@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
-async function auth(req,res,next){
+exports.auth = async (req,res,next)=>{
     try {
         
         const token =req.body.access_token || req.cookies.access_token || req.header("Authorization").replace("Bearer ","");
@@ -18,35 +18,15 @@ async function auth(req,res,next){
             })
         }
 
-        const payload =await jwt.verify(token, process.env.JWT_SECRET_KEY);
+        const payload =await jwt.verify(token, process.env.JWT_SECRET);
         req.user = payload;
         next();
 
     } catch (error) {
         return res.status(500).json({
             success:false,
-            message:"ERROR: authorizing.=> " +error.message 
+            message:"ERROR: authorizing. Sign In please. => " +error.message 
         });
     }
 }
 
-exports.isAdmin = async (req,res,next)=>{
-    try {
-        if(req.user.accountType === "Admin"){
-            
-            next();
-
-        }
-        else{
-            return res.status(400).json({
-                success:false,
-                message:"User not authorized for Admin route."
-            })
-        }
-    } catch (error) {
-        return res.status(500).json({
-            success:false,
-            message:"ERROR: authorizing for Admin=> " +error.message 
-        });
-    }
-}
