@@ -12,11 +12,11 @@ const roleSchema = new mongoose.Schema({
         default:null
     },
     created_at:{    
-        type:String,
+        type:Date,
         default:Date.now()
     },
     updated_at:{
-        type:String,
+        type:Date,
         default:Date.now()
     }
 })
