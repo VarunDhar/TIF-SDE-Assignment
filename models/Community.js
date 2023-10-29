@@ -1,7 +1,11 @@
 const mongoose = require("mongoose");
 
 const communitySchema = new mongoose.Schema({
-
+    _id:{
+        type:String,
+        require:true,
+        unique:true
+    },
     name:{
         type:String,
     },
@@ -13,11 +17,11 @@ const communitySchema = new mongoose.Schema({
         ref:"User"
     },
     created_at:{
-        type:String,
+        type:Date,
         default:Date.now()
     },
     updated_at:{
-        type:String,
+        type:Date,
         default:Date.now()
     }
 
