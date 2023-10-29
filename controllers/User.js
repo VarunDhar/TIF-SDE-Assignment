@@ -6,10 +6,11 @@ const jwt = require("jsonwebtoken");
 const validator = require("validatorjs");
 
 function addError(errors,validation){
-    let errorKeys = Object.keys(validation.errors);
-    console.log(validation.errors.errors);
+    let errorKeys = Object.keys(validation.errors.errors);
+
     for(let i=0;i<errorKeys.length;i++){
         let key = Object.keys(validation.errors.errors)[i];
+        console.log(key);
         errors.push(
             {
                 param:Object.keys(validation.errors.errors)[i],
@@ -32,26 +33,28 @@ exports.signup = async (req, res) => {
       const rules = {
         name:'required|min:2',
         email:'required|email',
-        password:'required|min:6'
+        password:'min:6'
       }
       let validation = new validator(data,rules,{
-        'required.min':{
+        
+        "required.name":{
+            string:'The :attribute be atleast 2 characters.'
+        },
+        "min.name":{
             string:'The :attribute be atleast :min characters.'
         },
-        'email':'Please provide a valid email address.'
+        "required.password":{
+            string:'The :attribute be atleast 6 characters.'
+        },
+        "min.password":{
+            string:'The :attribute be atleast :min characters.'
+        },
+        email:'Please provide a valid email address.'
     });
 
-    console.log(email,name,password);
-    if(JSON.stringify(validation.errors.errors).length !== 2){
-        console.log(JSON.stringify(validation.errors.errors).length);
-        console.log("here");
-
-        addError(errors,validation);
-    }
-
-
     if (validation.fails()) {
-        console.log("hello");
+        addError(errors,validation);
+
       return res.status(400).json({
         status: false,
         errors,
@@ -119,20 +122,26 @@ exports.signin = async (req, res) => {
       };
       const rules = {
         email:'required|email',
-        password:'min:6'
+        password:'required|min:6'
       }
       let validation = new validator(data,rules,{
-        min:{
+        
+        "required.password":{
+            string:'The :attribute be atleast 6 characters.'
+        },
+        "min.password":{
             string:'The :attribute be atleast :min characters.'
         },
         email:'Please provide a valid email address.'
     });
-        if(JSON.stringify(validation.errors.errors).length !== 2){
+        if(validation.fails()){
             addError(errors,validation);
+            return res.status(400).json({
+                status: false,
+                errors,
+            })
         }
-        // errors.push(validation.errors.errors);
         const user = await User.findOne({email:email});
-        // console.log(user);
         const doMatch  = await bcrypt.compare(password,user.password);
       if (!doMatch) {
         errors.push({
@@ -141,7 +150,6 @@ exports.signin = async (req, res) => {
           code: "INVALID_CREDENTIALS",
         });
       }
-      console.log(validation.errors.errors);
       if (errors.length) {
         return res.status(400).json({
           status: false,
@@ -149,7 +157,6 @@ exports.signin = async (req, res) => {
         });
       }
 
-      
       const payload = {
           data:{
               id: user.id,
@@ -200,7 +207,7 @@ exports.getMe = async(req,res)=>{
 
         res.status(200).json({
             status: true,
-            content: payload
+            content: {data:payload.data}
         })
         
 
