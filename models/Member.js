@@ -1,10 +1,15 @@
 const mongoose = require("mongoose");
 
 const memberSchema = new mongoose.Schema({
+    _id:{
+        type:String,
+        require:true,
+        unique:true
+    },
     community:{
         type:String,
         require:true,
-        default:null
+        ref:"Community"
     },
     user:{
         type:String,
@@ -17,7 +22,7 @@ const memberSchema = new mongoose.Schema({
         require:true
     },
     created_at:{
-        type:String,
+        type:Date,
         default:Date.now()
     },
 })
